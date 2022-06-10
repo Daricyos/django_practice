@@ -1,8 +1,10 @@
 from django.shortcuts import render
+from .models import *
 
 
 def store(requset):
-    context = {}
+    products = Product.objects.all()
+    context = {'products': products}
     return render(requset, 'store/store.html', context)
 
 def cart(requset):
