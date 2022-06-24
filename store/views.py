@@ -1,12 +1,10 @@
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
-import json
-from .models import *
+from .models import Product, Order, OrderItem
 
 
 def store(requset):
-
     if requset.user.is_authenticated:
         customer = requset.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -14,15 +12,15 @@ def store(requset):
         cartItems = order.get_cart_items
     else:
         items = []
-        order = {'get_cart_total':0, 'get_cart_items':0}
+        order = {'get_cart_total': 0, 'get_cart_items': 0}
         cartItems = order['get_cart_items']
 
     products = Product.objects.all()
-    context = {'products':products, 'cartItems':cartItems}
+    context = {'products': products, 'cartItems': cartItems}
     return render(requset, 'store/store.html', context)
 
-def cart(requset):
 
+def cart(requset):
     if requset.user.is_authenticated:
         customer = requset.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -30,14 +28,14 @@ def cart(requset):
         cartItems = order.get_cart_items
     else:
         items = []
-        order = {'get_cart_total':0, 'get_cart_items':0}
+        order = {'get_cart_total': 0, 'get_cart_items': 0}
         cartItems = order['get_cart_items']
 
-    context = {'items':items, 'order':order, 'cartItems':cartItems}
+    context = {'items': items, 'order': order, 'cartItems': cartItems}
     return render(requset, 'store/cart.html', context)
 
-def checkout(requset):
 
+def checkout(requset):
     if requset.user.is_authenticated:
         customer = requset.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -45,11 +43,12 @@ def checkout(requset):
         cartItems = order.get_cart_items
     else:
         items = []
-        order = {'get_cart_total':0, 'get_cart_items':0}
+        order = {'get_cart_total': 0, 'get_cart_items': 0}
         cartItems = order['get_cart_items']
 
-    context = {'items':items, 'order':order, 'cartItems':cartItems}
+    context = {'items': items, 'order': order, 'cartItems': cartItems}
     return render(requset, 'store/checkout.html', context)
+
 
 def updateItem(request):
     data = json.loads(request.body)
@@ -69,7 +68,7 @@ def updateItem(request):
         orderItem.quantity = (orderItem.quantity + 1)
     elif action == 'remove':
         orderItem.quantity = (orderItem.quantity - 1)
-    
+
     orderItem.save()
 
     if orderItem.quantity <= 0:
